@@ -1,0 +1,59 @@
+---
+title: "Python in R"
+author: "Joel Alcedo"
+date: "June 16, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+rm(list=ls())
+library(tidyverse)
+library(reticulate)
+library(lubridate)
+```
+
+#Port the Python code over...
+```{r}
+reticulate::source_python('S:/Medium/python_in_r.py')
+```
+
+#Call Pythonic function in R
+```{r}
+platinum <- grab_from_quandl('JOHNMATT/PLATINUM')
+
+```
+
+#Clean up & Visualize
+```{r}
+
+platinum %>%
+  mutate(date = as.Date(rownames(.))) %>%
+  select(date, everything()) %>%
+  filter(day(date) == 1) %>%
+  select(date, `Total Supply`, `Net Demand`) %>%
+  mutate(Balance = `Total Supply` - `Net Demand`) %>%
+  ggplot() + 
+  geom_bar(aes(date, `Total Supply`), stat = "identity", fill = "#4286f4") + 
+  geom_bar(aes(date, `Net Demand`*-1), stat = "identity", fill = "#f28c8c") + 
+  geom_line(aes(date, Balance), linetype = "dashed", color = "black")  +
+  geom_hline(aes(yintercept = 0), color = "#606060") + 
+  theme_light() + 
+  labs(title = "Platinum Supply and Net Demand Balances",
+       x = "Year", y = "Ounces (1k)") + 
+  theme(plot.title = element_text(face = "bold")) +
+  geom_label(aes(x = min(date), y = 7500), label = "Total Supply", color = "#4286f4", fontface = "bold") +
+  geom_label(aes(x = min(date), y = -7500), label = "Net Demand", color = "#f28c8c", fontface = "bold")
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
