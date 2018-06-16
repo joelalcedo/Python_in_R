@@ -9,7 +9,7 @@ import quandl
 import sys
 
 def grab_from_quandl(x):
-    quandl.ApiConfig.api_key = "fAvJzqPQPC_qaDS2WGFf"
+    quandl.ApiConfig.api_key = "ENTER_API_KEY_HERE"
     try:
         df = quandl.get(x)
         return df
